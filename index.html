@@ -3,135 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tianxin (William) Wang</title>
+    <title>Tianxin Wang | Dual Gravity</title>
     <style>
         :root {
-            --bg-color: #f4f4f9;
-            --text-color: #333;
-            --accent-color: #2774AE; /* UCLA Blue */
-            --card-bg: #fff;
+            --bg-color: #050505;
+            --text-color: #e0e0e0;
+            --accent-blue: #00d2ff;
+            --accent-purple: #3a7bd5;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #1a1a1a;
-                --text-color: #e0e0e0;
-                --accent-color: #8BB8E8; /* Lighter Blue for Dark Mode */
-                --card-bg: #2d2d2d;
-            }
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        
+        * { box-sizing: border-box; }
+        
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
         }
+
+        /* 互动背景 Canvas */
+        #mathCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
         .container {
-            max-width: 800px;
-            margin: 40px 20px;
-            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
         }
-        header {
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 20px;
+
+        /* 毛玻璃卡片风格 */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
             margin-bottom: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        h1 { margin: 0 0 10px 0; font-size: 2.5em; }
-        h2 { color: var(--accent-color); margin-top: 30px; }
-        p.subtitle { font-size: 1.2em; color: gray; margin: 0; }
-        .card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 210, 255, 0.15);
+            border-color: rgba(0, 210, 255, 0.3);
         }
-        .card h3 { margin-top: 0; margin-bottom: 5px; }
-        .card p.meta { font-size: 0.9em; color: gray; margin-top: 0; margin-bottom: 15px; }
-        a { color: var(--accent-color); text-decoration: none; font-weight: bold; }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            color: #fff;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+
+        .typewriter {
+            font-size: 1.2em;
+            color: #aaa;
+            border-right: 2px solid var(--accent-blue);
+            white-space: nowrap;
+            overflow: hidden;
+            animation: typing 3s steps(40, end), blink-caret .75s step-end infinite;
+        }
+
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--accent-blue); } }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            h1 { font-size: 2.5em; }
+        }
+
+        .tag-container {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px;
+        }
+        .tag {
+            background: rgba(0, 210, 255, 0.1);
+            color: var(--accent-blue);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+        }
+        
+        a { color: var(--accent-blue); text-decoration: none; }
         a:hover { text-decoration: underline; }
-        ul { padding-left: 20px; }
-        .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .tag { background: var(--bg-color); padding: 4px 8px; border-radius: 4px; font-size: 0.85em; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
 
+<canvas id="mathCanvas"></canvas>
+
 <div class="container">
-    <header>
-        <h1>Tianxin (William) Wang</h1>
-        <p class="subtitle">B.S. Applied Mathematics @ UCLA | Quantitative Research & Data Science</p>
+    <header style="margin-bottom: 60px;">
+        <h1>William Wang</h1>
+        <div style="display: inline-block;">
+            <p class="typewriter">Applied Math & Data Science @ UCLA</p>
+        </div>
     </header>
 
     <section>
-        <h2>About</h2>
-        <p>I am an undergraduate student at the University of California, Los Angeles (Expected June 2029) majoring in Applied Mathematics. My academic and research focus lies at the intersection of mathematical modeling, complex system computation, and robust control. This space catalogs my ongoing research, Kaggle competition milestones, and data analytics projects.</p>
+        <div class="glass-card">
+            <h2>System.out.println("Hello, World!");</h2>
+            <p>I build computational models to understand complex systems, and I write stories to understand everything else. From optimizing sensor placements in soft robotics to managing the adrenaline of a track race and the strategy of a Poker table—this is my digital footprint.</p>
+        </div>
     </section>
 
     <section>
-        <h2>Honors & Awards</h2>
-        <ul>
-            <li><strong>Kaggle Silver Medal (Top 4%)</strong> - PhysioNet Challenge: Digitization of ECG Images</li>
-            <li><strong>Kaggle Silver Medal</strong> - Vesuvius Challenge: 3D Vision Data Extraction</li>
-            <li><strong>1st Place</strong> - BAS Case Competition (Financial Projection & Attribution Analysis)</li>
-        </ul>
+        <h2>I. The Rigorous (Data & Control)</h2>
+        <div class="grid-2">
+            <div class="glass-card">
+                <h3>Soft Robotics & PDEs</h3>
+                <p>Researching infinite-dimensional PDE models and Cosserat rod theories. Translating physical flexibility into mathematical boundaries, optimizing sensor matrices for precise robotic control under noise.</p>
+                <div class="tag-container">
+                    <span class="tag">Math Modeling</span>
+                    <span class="tag">Convex Optimization</span>
+                </div>
+            </div>
+            <div class="glass-card">
+                <h3>Data & Algorithms</h3>
+                <p>Dual Kaggle Silver Medalist (Top 4%) handling unstructured data from 3D Vision Extraction to ECG Digitization. Building predictive pipelines using Python, C++, and deep statistical regression.</p>
+                <div class="tag-container">
+                    <span class="tag">Python/C++</span>
+                    <span class="tag">Machine Learning</span>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section>
-        <h2>Research & Projects</h2>
+        <h2>II. The Abstract (Life & Creativity)</h2>
+        <div class="glass-card">
+            <h3>Sci-Fi & Cinema</h3>
+            <p>Author of the upcoming sci-fi story <em>"City of Ice and Snow"</em>. When I'm not coding, I'm deep diving into European New Wave cinema, analyzing the visual language of masters like Velázquez, or deconstructing frame-by-frame narrative techniques in works like the Czech animated cartoon <em>The Hand</em>.</p>
+        </div>
         
-        <div class="card">
-            <h3>Weak Convexity in Robust Control Systems</h3>
-            <p class="meta">Undergraduate Researcher | Advisor: William Chang</p>
-            <p>Investigating the direct policy-search formulation of discrete-time H-infinity control. Currently deriving sufficient conditions for weak convexity on sublevel sets and establishing the Lipschitz continuity of Fréchet derivatives to support stochastic subgradient analyses.</p>
-            <div class="tags">
-                <span class="tag">H-infinity Control Theory</span>
-                <span class="tag">Convex Optimization</span>
+        <div class="grid-2">
+            <div class="glass-card">
+                <h3>Strategy & Adrenaline</h3>
+                <p>Varsity Track & Field Captain and cycling tech enthusiast. Whether it's coordinating relay strategies on the track, grinding CS2, or running odds at a live Poker table, I thrive on high-stakes, fast-paced decision making.</p>
             </div>
-        </div>
-
-        <div class="card">
-            <h3>Sensor Placement Optimization for Soft Robotics</h3>
-            <p class="meta">Undergraduate Researcher | Advisor: William Chang</p>
-            <p>Implementing modal approximation algorithms using Galerkin projection to reduce infinite-dimensional PDE models (Cosserat rod) into finite-dimensional dynamics. Developing a greedy optimization framework to bound full-field reconstruction error under measurement noise.</p>
-            <div class="tags">
-                <span class="tag">PDE Modeling</span>
-                <span class="tag">Numerical Simulation</span>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Shared Bicycle Usage & Predictive Analytics</h3>
-            <p class="meta">Co-Author & Data Analyst</p>
-            <p>Led data cleaning and environmental factor correlation analysis using Python and statistical regression to synthesize unstructured datasets. Handled the visualization of demand forecasting results for the final publication.</p>
-            <div class="tags">
-                <span class="tag">Python (Pandas, NumPy)</span>
-                <span class="tag">Statistical Regression</span>
+            <div class="glass-card">
+                <h3>Food Economics</h3>
+                <p>Actively engaged in the intersection of economics and sustainable food systems, investigating labor ethics, agricultural subsidies, and cooperative models like the SoLA Food Co-op.</p>
             </div>
         </div>
     </section>
 
-    <section>
-        <h2>Technical Skills</h2>
-        <ul>
-            <li><strong>Programming:</strong> Python (NumPy, Pandas, PyTorch), C++, Java, R, SQL, MATLAB</li>
-            <li><strong>Quantitative Toolkit:</strong> H-infinity Control Theory, PDE Modeling, Convex Optimization, Financial Attribution</li>
-            <li><strong>Tools & Software:</strong> LaTeX, Git/GitHub, Unix/Linux, Advanced Excel, Power BI, Tableau</li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>Contact & Links</h2>
-        <ul>
-            <li>Email: <a href="mailto:tianxinwang2006@g.ucla.edu">tianxinwang2006@g.ucla.edu</a></li>
-            <li>LinkedIn: <a href="https://www.linkedin.com/in/tianxinwang2006" target="_blank">linkedin.com/in/tianxinwang2006</a></li>
-            <li>GitHub: <a href="https://github.com/你的GitHub用户名" target="_blank">@你的GitHub用户名</a> </li>
-        </ul>
-    </section>
+    <footer style="margin-top: 50px; text-align: center; color: #888; border-top: 1px solid var(--glass-border); padding-top: 20px;">
+        <p>Interact with the background. Built with raw Math and JS.</p>
+        <p>GitHub: <a href="https://github.com/tianxinwang89-source" target="_blank">@tianxinwang89-source</a> | <a href="mailto:tianxinwang2006@g.ucla.edu">Email Me</a></p>
+    </footer>
 </div>
+
+<script>
+    // 酷炫背景互动逻辑：基于数学正弦波和鼠标引力的软体物理模拟
+    const canvas = document.getElementById('mathCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+    let mouse = { x: null, y: null };
+
+    window.addEventListener('mousemove', function(event) {
+        mouse.x = event.x;
+        mouse.y = event.y;
+    });
+
+    window.addEventListener('resize', function() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        init();
+    });
+
+    class Particle {
+        constructor(x, y, size, weight) {
+            this.x = x;
+            this.y = y;
+            this.size = size;
+            this.weight = weight;
+            this.baseY = y; // 记录初始位置，用于数学波浪计算
+        }
+        update(time) {
+            // 基础运动：使用正弦波模拟“软体/PDE”的波动感
+            this.y = this.baseY + Math.sin(this.x * 0.01 + time * 0.002) * 20;
+
+            // 鼠标引力计算
+            if (mouse.x != null) {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                let maxDistance = 150;
+
+                if (distance < maxDistance) {
+                    let force = (maxDistance - distance) / maxDistance;
+                    // 鼠标排斥效果，很带感
+                    this.x -= (dx / distance) * force * 5;
+                    this.y -= (dy / distance) * force * 5;
+                }
+            }
+            // 边界恢复
+            if (this.x < 0 || this.x > canvas.width) {
+                this.x = Math.random() * canvas.width;
+            }
+        }
+        draw() {
+            ctx.fillStyle = 'rgba(0, 210, 255, 0.8)';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+        }
+    }
+
+    function init() {
+        particles = [];
+        let numberOfParticles = (canvas.width * canvas.height) / 9000;
+        for (let i = 0; i < numberOfParticles; i++) {
+            let x = Math.random() * canvas.width;
+            let y = Math.random() * canvas.height;
+            let size = (Math.random() * 2) + 1;
+            let weight = (Math.random() * 2) + 0.1;
+            particles.push(new Particle(x, y, size, weight));
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let time = Date.now();
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update(time);
+            particles[i].draw();
+            
+            // 连线逻辑：体现数据的网络感
+            for (let j = i; j < particles.length; j++) {
+                let dx = particles[i].x - particles[j].x;
+                let dy = particles[i].y - particles[j].y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < 100) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(58, 123, 213, ${1 - distance/100})`;
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                    ctx.closePath();
+                }
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+
+    init();
+    animate();
+</script>
 
 </body>
 </html>
