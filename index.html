@@ -3,25 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>William 的数字客厅</title>
+    <title>William Wang | Access Terminal</title>
     <style>
         :root {
-            --bg-color: #fcfcfc;
-            --text-color: #2c3e50;
-            --nav-bg: #ffffff;
-            --accent: #2774AE;
-            --light-gray: #f5f7fa;
-            --border-color: #eaecef;
+            --bg-color: #f7f9fa;
+            --text-color: #1c1e21;
+            --card-bg: #ffffff;
+            --accent: #2774AE; /* UCLA Blue */
+            --border: #e1e4e8;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg-color: #121212;
-                --text-color: #e4e6eb;
-                --nav-bg: #1a1a1a;
-                --accent: #66b2ff;
-                --light-gray: #1e1e1e;
-                --border-color: #333;
+                --bg-color: #0d1117;
+                --text-color: #c9d1d9;
+                --card-bg: #161b22;
+                --accent: #58a6ff;
+                --border: #30363d;
             }
         }
 
@@ -29,156 +27,180 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            line-height: 1.8;
+            line-height: 1.6;
             margin: 0;
             padding: 0;
-            transition: background-color 0.3s ease;
         }
 
-        /* 顶部导航栏 */
-        nav {
-            background-color: var(--nav-bg);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 15px 0;
-        }
-
-        .nav-container {
-            max-width: 700px;
-            margin: 0 auto;
-            display: flex;
-            gap: 20px;
-            padding: 0 20px;
-        }
-
-        .nav-btn {
-            background: none;
-            border: none;
-            font-size: 1.1em;
-            color: var(--text-color);
-            cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 6px;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-
-        .nav-btn:hover { background-color: var(--light-gray); }
-        .nav-btn.active { color: var(--accent); font-weight: bold; }
-
-        /* 内容区 */
-        .content-container {
-            max-width: 700px;
+        .container {
+            max-width: 760px;
             margin: 40px auto;
             padding: 0 20px;
-            min-height: 70vh;
         }
 
-        /* 页面切换逻辑 */
-        .page {
-            display: none;
-            animation: fadeIn 0.4s ease;
+        /* 顶部身份选择器 */
+        .identity-selector {
+            display: flex;
+            gap: 10px;
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 40px;
+            overflow-x: auto;
         }
-        .page.active { display: block; }
+
+        .tab-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(39, 116, 174, 0.3);
+        }
+
+        /* 页面内容区 */
+        .module {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .module.active { display: block; }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h1 { font-size: 2.2em; margin-bottom: 5px; }
-        h2 { font-size: 1.5em; border-bottom: 2px solid var(--light-gray); padding-bottom: 10px; margin-top: 40px;}
-        p { font-size: 1.05em; color: var(--text-color); }
-        
-        .date { font-size: 0.9em; color: gray; margin-bottom: 10px; display: block; }
-        
         .card {
-            background: var(--nav-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
         }
 
-        a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); }
-        a:hover { border-bottom-style: solid; }
+        h1 { font-size: 2em; margin-top: 0; }
+        h2 { font-size: 1.4em; color: var(--text-color); margin-bottom: 10px;}
+        h3 { font-size: 1.2em; border-left: 3px solid var(--accent); padding-left: 10px; }
+        
+        .tag {
+            display: inline-block;
+            background: rgba(88, 166, 255, 0.1);
+            color: var(--accent);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            margin-right: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* 图片样式 */
+        .styled-img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 15px 0;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="nav-container">
-            <button class="nav-btn active" onclick="switchPage('home', this)">首页</button>
-            <button class="nav-btn" onclick="switchPage('research', this)">实验室</button>
-            <button class="nav-btn" onclick="switchPage('diary', this)">碎碎念</button>
-        </div>
-    </nav>
+<div class="container">
+    
+    <header style="margin-bottom: 30px;">
+        <h1>Tianxin (William) Wang</h1>
+        <p>Select your clearance level to view relevant data.</p>
+    </header>
 
-    <div class="content-container">
-        
-        <div id="home" class="page active">
-            <h1>嘿，我是 William 👋</h1>
-            <p>欢迎来到我的数字客厅。我目前在 UCLA 读应用数学。别人看数学可能是满黑板枯燥的公式，但在我眼里，那是理解这个复杂世界的底层代码。</p>
-            <p>这个网站是我的自留地。我不仅会在这里挂一些正在推进的机器人控制算法和数据分析 Demo，也会记点杂七杂八的生活——比如昨晚 CS2 的窒息残局，或者是最近正在改稿的科幻小说。</p>
-            <p>比起一份光鲜亮丽的简历，我更希望你在这里看到一个活生生的人。</p>
-            <p>找我聊天：<a href="mailto:tianxinwang2006@g.ucla.edu">tianxinwang2006@g.ucla.edu</a></p>
-        </div>
-
-        <div id="research" class="page">
-            <h1>实验室 🔬</h1>
-            <p>这里记录了我平时在算些什么，以及踩过的坑。</p>
-
-            <div class="card">
-                <h3>给软体机器人找“痛觉神经”</h3>
-                <span class="date">Ongoing Project - Cosserat Rod Theory</span>
-                <p>最近在头疼软体机器人的传感器布局问题。传统的机械臂是硬的，关节在哪就在哪装传感器；但软体机械臂就像章鱼触手，变形是连续的。我正在用偏微分方程和 Galerkin 投影来降维，试图算出在充满噪声的现实环境里，到底把传感器贴在哪几个关键点，才能最准地还原它整体的姿态。</p>
-            </div>
-
-            <div class="card">
-                <h3>在 Kaggle 里淘金</h3>
-                <span class="date">Data Science Competitions</span>
-                <p>没事喜欢去 Kaggle 找点真实世界的脏数据练手。之前搞了 PhysioNet 的心电图数字化，还有 Vesuvius 的 3D 断层扫描数据提取。看着一堆乱码经过 Python 和 C++ 的洗礼变成清晰的预测模型，感觉跟破案一样爽。</p>
-            </div>
-        </div>
-
-        <div id="diary" class="page">
-            <h1>碎碎念 ☕</h1>
-            <p>一些和代码无关的日常输出，思考的碎片和生活的底噪。</p>
-
-            <div class="card">
-                <h3>《冰雪之城》要交稿了</h3>
-                <span class="date">2026年5月</span>
-                <p>最近除了搞数学建模，大部分时间都在磨我的那篇科幻小说《City of Ice and Snow》。理科生写小说有个毛病，就是总想把世界观的物理逻辑盘得太明白，反而容易卡文。现在正在努力把重心拉回到人物的动机上。希望能顺利发表吧。</p>
-            </div>
-
-            <div class="card">
-                <h3>拉片笔记：捷克动画短片《手》(The Hand)</h3>
-                <span class="date">2026年4月</span>
-                <p>这周花了不少时间分析捷克的经典动画短片《The Hand》（注意，是那个很阴暗的木偶动画，不是什么真人电影）。没有一句台词，纯靠定格动画和极端的隐喻把权力、自由和艺术家的压抑表达得淋漓尽致。看惯了欧洲新浪潮那种长镜头，再回来看这种高密度的视觉象征，挺受启发的。</p>
-            </div>
-        </div>
-
+    <div class="identity-selector">
+        <button class="tab-btn active" onclick="switchModule('recruiter', this)">👔 招聘/学术 (HR & Prof.)</button>
+        <button class="tab-btn" onclick="switchModule('friends', this)">🍻 朋友/校友 (Friends)</button>
+        <button class="tab-btn" onclick="switchModule('private', this)">🌌 精神角落 (Vault)</button>
     </div>
 
-    <script>
-        function switchPage(pageId, btnElement) {
-            // 隐藏所有页面
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(page => page.classList.remove('active'));
-
-            // 取消所有按钮的选中状态
-            const btns = document.querySelectorAll('.nav-btn');
-            btns.forEach(btn => btn.classList.remove('active'));
-
-            // 显示目标页面并高亮对应按钮
-            document.getElementById(pageId).classList.add('active');
-            btnElement.classList.add('active');
+    <div id="recruiter" class="module active">
+        <div class="card">
+            <h2>Academic & Professional Profile</h2>
+            <p><strong>UCLA Applied Mathematics</strong> | GPA: 3.80 | Expected June 2029</p>
+            <p>专注复杂系统建模、凸优化与数据科学。曾在 PhysioNet (ECG Digitization) 和 Vesuvius (3D Tomography) 两项 Kaggle 挑战赛中斩获银牌（Top 4%），并获得 BAS Case Competition 冠军。</p>
             
-            // 切换页面时自动回到顶部
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    </script>
+            <h3>软体机器人传感器布局优化</h3>
+            <span class="tag">PDE Modeling</span> <span class="tag">Cosserat Rod Theory</span>
+            <p>在实验室基于 Galerkin 投影对无穷维偏微分方程进行降维。研发贪心优化算法，解决在存在测量噪声情况下的传感器最优放置问题。</p>
+            
+            <img src="research.jpg" alt="Research Visualization" class="styled-img" onerror="this.style.display='none'">
+            
+            <h3>Robust Control Systems</h3>
+            <span class="tag">H-infinity Control</span> <span class="tag">Convex Optimization</span>
+            <p>研究离散时间系统中的直接策略搜索，推导弱凸性条件并验证理论结果。</p>
+            <p style="margin-top: 20px;"><a href="mailto:tianxinwang2006@g.ucla.edu" style="color: var(--accent); font-weight: bold;">[ Get in touch for my full Resume ]</a></p>
+        </div>
+    </div>
+
+    <div id="friends" class="module">
+        <div class="card">
+            <h2>Track, Tech & Tactics</h2>
+            <p>除了在实验室算方程，这里是我的竞技场和生活区。</p>
+
+            <h3>🏃‍♂️ 田径与破风</h3>
+            <p>Varsity Track and Field 队长。我喜欢研究接力赛的策略，也自己运营过专注于气动自行车（aero-bike）机械原理和赛事表现分析的账号。不管是田径还是骑车，本质上都是在和物理阻力作斗争。</p>
+            
+            <img src="sports.jpg" alt="Track and Field / Cycling" class="styled-img" onerror="this.style.display='none'">
+
+            <h3>🎮 电子与桌面博弈</h3>
+            <p>高强度 CS2 玩家，德州扑克爱好者。从 Kaggle 赛场到牌桌，我沉迷于在不完全信息下做 EV（期望值）最大化的决策。</p>
+        </div>
+    </div>
+
+    <div id="private" class="module">
+        <div class="card">
+            <h2>The Vault</h2>
+            <p>一些感性的碎片、社会观察与未完结的创作。</p>
+
+            <h3>✍️ Sci-Fi: City of Ice and Snow</h3>
+            <p>即将发表的科幻小说。在这里，我试图暂时放下严谨的控制系统和数学推导，探讨在极寒的反乌托邦设定下，人类动机的不可控性。</p>
+
+            <h3>🎥 视觉与隐喻</h3>
+            <p>对于学艺术或懂电影的朋友，你们懂的。最近在拉片捷克经典木偶动画短片《The Hand》，以及重温 Velázquez 的画作。当欧洲新浪潮的电影语言看腻了之后，这种高强度的定格隐喻反而有着直击人心的力量。</p>
+            
+            <img src="life.jpg" alt="Cinema and Art" class="styled-img" onerror="this.style.display='none'">
+
+            <h3>🌱 农业与劳工伦理</h3>
+            <p>除了敲代码，我也在关注食品经济系统。一直在追踪 SoLA Food Co-op 的进展，思考农业补贴背后的逻辑和移民劳工的伦理困境。技术是为了让世界变得更有效率，但经济学决定了这种效率最终服务于谁。</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function switchModule(moduleId, btnElement) {
+        // 隐藏所有模块
+        const modules = document.querySelectorAll('.module');
+        modules.forEach(mod => mod.classList.remove('active'));
+
+        // 移除所有按钮的 active 状态
+        const btns = document.querySelectorAll('.tab-btn');
+        btns.forEach(btn => btn.classList.remove('active'));
+
+        // 显示目标模块并高亮按钮
+        document.getElementById(moduleId).classList.add('active');
+        btnElement.classList.add('active');
+    }
+</script>
+
 </body>
 </html>
