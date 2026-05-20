@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tianxin (William) Wang</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f9;
+            --text-color: #333;
+            --accent-color: #2774AE; /* UCLA Blue */
+            --card-bg: #fff;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #1a1a1a;
+                --text-color: #e0e0e0;
+                --accent-color: #8BB8E8; /* Lighter Blue for Dark Mode */
+                --card-bg: #2d2d2d;
+            }
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px 20px;
+            padding: 20px;
+        }
+        header {
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h1 { margin: 0 0 10px 0; font-size: 2.5em; }
+        h2 { color: var(--accent-color); margin-top: 30px; }
+        p.subtitle { font-size: 1.2em; color: gray; margin: 0; }
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .card h3 { margin-top: 0; margin-bottom: 5px; }
+        .card p.meta { font-size: 0.9em; color: gray; margin-top: 0; margin-bottom: 15px; }
+        a { color: var(--accent-color); text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+        ul { padding-left: 20px; }
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .tag { background: var(--bg-color); padding: 4px 8px; border-radius: 4px; font-size: 0.85em; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Tianxin (William) Wang</h1>
+        <p class="subtitle">B.S. Applied Mathematics @ UCLA | Quantitative Research & Data Science</p>
+    </header>
+
+    <section>
+        <h2>About</h2>
+        <p>I am an undergraduate student at the University of California, Los Angeles (Expected June 2029) majoring in Applied Mathematics. My academic and research focus lies at the intersection of mathematical modeling, complex system computation, and robust control. This space catalogs my ongoing research, Kaggle competition milestones, and data analytics projects.</p>
+    </section>
+
+    <section>
+        <h2>Honors & Awards</h2>
+        <ul>
+            <li><strong>Kaggle Silver Medal (Top 4%)</strong> - PhysioNet Challenge: Digitization of ECG Images</li>
+            <li><strong>Kaggle Silver Medal</strong> - Vesuvius Challenge: 3D Vision Data Extraction</li>
+            <li><strong>1st Place</strong> - BAS Case Competition (Financial Projection & Attribution Analysis)</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Research & Projects</h2>
+        
+        <div class="card">
+            <h3>Weak Convexity in Robust Control Systems</h3>
+            <p class="meta">Undergraduate Researcher | Advisor: William Chang</p>
+            <p>Investigating the direct policy-search formulation of discrete-time H-infinity control. Currently deriving sufficient conditions for weak convexity on sublevel sets and establishing the Lipschitz continuity of Fréchet derivatives to support stochastic subgradient analyses.</p>
+            <div class="tags">
+                <span class="tag">H-infinity Control Theory</span>
+                <span class="tag">Convex Optimization</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Sensor Placement Optimization for Soft Robotics</h3>
+            <p class="meta">Undergraduate Researcher | Advisor: William Chang</p>
+            <p>Implementing modal approximation algorithms using Galerkin projection to reduce infinite-dimensional PDE models (Cosserat rod) into finite-dimensional dynamics. Developing a greedy optimization framework to bound full-field reconstruction error under measurement noise.</p>
+            <div class="tags">
+                <span class="tag">PDE Modeling</span>
+                <span class="tag">Numerical Simulation</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Shared Bicycle Usage & Predictive Analytics</h3>
+            <p class="meta">Co-Author & Data Analyst</p>
+            <p>Led data cleaning and environmental factor correlation analysis using Python and statistical regression to synthesize unstructured datasets. Handled the visualization of demand forecasting results for the final publication.</p>
+            <div class="tags">
+                <span class="tag">Python (Pandas, NumPy)</span>
+                <span class="tag">Statistical Regression</span>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Technical Skills</h2>
+        <ul>
+            <li><strong>Programming:</strong> Python (NumPy, Pandas, PyTorch), C++, Java, R, SQL, MATLAB</li>
+            <li><strong>Quantitative Toolkit:</strong> H-infinity Control Theory, PDE Modeling, Convex Optimization, Financial Attribution</li>
+            <li><strong>Tools & Software:</strong> LaTeX, Git/GitHub, Unix/Linux, Advanced Excel, Power BI, Tableau</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>Contact & Links</h2>
+        <ul>
+            <li>Email: <a href="mailto:tianxinwang2006@g.ucla.edu">tianxinwang2006@g.ucla.edu</a></li>
+            <li>LinkedIn: <a href="https://www.linkedin.com/in/tianxinwang2006" target="_blank">linkedin.com/in/tianxinwang2006</a></li>
+            <li>GitHub: <a href="https://github.com/你的GitHub用户名" target="_blank">@你的GitHub用户名</a> </li>
+        </ul>
+    </section>
+</div>
+
+</body>
+</html>
