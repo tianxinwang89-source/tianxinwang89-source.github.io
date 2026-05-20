@@ -1,289 +1,184 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tianxin Wang | Dual Gravity</title>
+    <title>William 的数字客厅</title>
     <style>
         :root {
-            --bg-color: #050505;
-            --text-color: #e0e0e0;
-            --accent-blue: #00d2ff;
-            --accent-purple: #3a7bd5;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --bg-color: #fcfcfc;
+            --text-color: #2c3e50;
+            --nav-bg: #ffffff;
+            --accent: #2774AE;
+            --light-gray: #f5f7fa;
+            --border-color: #eaecef;
         }
-        
-        * { box-sizing: border-box; }
-        
-        body, html {
-            margin: 0; padding: 0;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --text-color: #e4e6eb;
+                --nav-bg: #1a1a1a;
+                --accent: #66b2ff;
+                --light-gray: #1e1e1e;
+                --border-color: #333;
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            overflow-x: hidden;
-            scroll-behavior: smooth;
+            line-height: 1.8;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease;
         }
 
-        /* 互动背景 Canvas */
-        #mathCanvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            z-index: -1;
-            opacity: 0.6;
+        /* 顶部导航栏 */
+        nav {
+            background-color: var(--nav-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 0;
         }
 
-        .container {
-            max-width: 900px;
+        .nav-container {
+            max-width: 700px;
             margin: 0 auto;
-            padding: 40px 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* 毛玻璃卡片风格 */
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 210, 255, 0.15);
-            border-color: rgba(0, 210, 255, 0.3);
-        }
-
-        h1 {
-            font-size: 3.5em;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        h2 {
-            font-size: 1.8em;
-            color: #fff;
-            border-bottom: 1px solid var(--glass-border);
-            padding-bottom: 10px;
-            margin-top: 40px;
-        }
-
-        .typewriter {
-            font-size: 1.2em;
-            color: #aaa;
-            border-right: 2px solid var(--accent-blue);
-            white-space: nowrap;
-            overflow: hidden;
-            animation: typing 3s steps(40, end), blink-caret .75s step-end infinite;
-        }
-
-        @keyframes typing { from { width: 0 } to { width: 100% } }
-        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--accent-blue); } }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: flex;
             gap: 20px;
+            padding: 0 20px;
         }
 
-        @media (max-width: 768px) {
-            .grid-2 { grid-template-columns: 1fr; }
-            h1 { font-size: 2.5em; }
+        .nav-btn {
+            background: none;
+            border: none;
+            font-size: 1.1em;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-weight: 500;
         }
 
-        .tag-container {
-            display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px;
+        .nav-btn:hover { background-color: var(--light-gray); }
+        .nav-btn.active { color: var(--accent); font-weight: bold; }
+
+        /* 内容区 */
+        .content-container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 0 20px;
+            min-height: 70vh;
         }
-        .tag {
-            background: rgba(0, 210, 255, 0.1);
-            color: var(--accent-blue);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            border: 1px solid rgba(0, 210, 255, 0.2);
+
+        /* 页面切换逻辑 */
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease;
         }
+        .page.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { font-size: 2.2em; margin-bottom: 5px; }
+        h2 { font-size: 1.5em; border-bottom: 2px solid var(--light-gray); padding-bottom: 10px; margin-top: 40px;}
+        p { font-size: 1.05em; color: var(--text-color); }
         
-        a { color: var(--accent-blue); text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        .date { font-size: 0.9em; color: gray; margin-bottom: 10px; display: block; }
+        
+        .card {
+            background: var(--nav-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        a { color: var(--accent); text-decoration: none; border-bottom: 1px dashed var(--accent); }
+        a:hover { border-bottom-style: solid; }
     </style>
 </head>
 <body>
 
-<canvas id="mathCanvas"></canvas>
-
-<div class="container">
-    <header style="margin-bottom: 60px;">
-        <h1>William Wang</h1>
-        <div style="display: inline-block;">
-            <p class="typewriter">Applied Math & Data Science @ UCLA</p>
+    <nav>
+        <div class="nav-container">
+            <button class="nav-btn active" onclick="switchPage('home', this)">首页</button>
+            <button class="nav-btn" onclick="switchPage('research', this)">实验室</button>
+            <button class="nav-btn" onclick="switchPage('diary', this)">碎碎念</button>
         </div>
-    </header>
+    </nav>
 
-    <section>
-        <div class="glass-card">
-            <h2>System.out.println("Hello, World!");</h2>
-            <p>I build computational models to understand complex systems, and I write stories to understand everything else. From optimizing sensor placements in soft robotics to managing the adrenaline of a track race and the strategy of a Poker table—this is my digital footprint.</p>
-        </div>
-    </section>
-
-    <section>
-        <h2>I. The Rigorous (Data & Control)</h2>
-        <div class="grid-2">
-            <div class="glass-card">
-                <h3>Soft Robotics & PDEs</h3>
-                <p>Researching infinite-dimensional PDE models and Cosserat rod theories. Translating physical flexibility into mathematical boundaries, optimizing sensor matrices for precise robotic control under noise.</p>
-                <div class="tag-container">
-                    <span class="tag">Math Modeling</span>
-                    <span class="tag">Convex Optimization</span>
-                </div>
-            </div>
-            <div class="glass-card">
-                <h3>Data & Algorithms</h3>
-                <p>Dual Kaggle Silver Medalist (Top 4%) handling unstructured data from 3D Vision Extraction to ECG Digitization. Building predictive pipelines using Python, C++, and deep statistical regression.</p>
-                <div class="tag-container">
-                    <span class="tag">Python/C++</span>
-                    <span class="tag">Machine Learning</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <h2>II. The Abstract (Life & Creativity)</h2>
-        <div class="glass-card">
-            <h3>Sci-Fi & Cinema</h3>
-            <p>Author of the upcoming sci-fi story <em>"City of Ice and Snow"</em>. When I'm not coding, I'm deep diving into European New Wave cinema, analyzing the visual language of masters like Velázquez, or deconstructing frame-by-frame narrative techniques in works like the Czech animated cartoon <em>The Hand</em>.</p>
-        </div>
+    <div class="content-container">
         
-        <div class="grid-2">
-            <div class="glass-card">
-                <h3>Strategy & Adrenaline</h3>
-                <p>Varsity Track & Field Captain and cycling tech enthusiast. Whether it's coordinating relay strategies on the track, grinding CS2, or running odds at a live Poker table, I thrive on high-stakes, fast-paced decision making.</p>
+        <div id="home" class="page active">
+            <h1>嘿，我是 William 👋</h1>
+            <p>欢迎来到我的数字客厅。我目前在 UCLA 读应用数学。别人看数学可能是满黑板枯燥的公式，但在我眼里，那是理解这个复杂世界的底层代码。</p>
+            <p>这个网站是我的自留地。我不仅会在这里挂一些正在推进的机器人控制算法和数据分析 Demo，也会记点杂七杂八的生活——比如昨晚 CS2 的窒息残局，或者是最近正在改稿的科幻小说。</p>
+            <p>比起一份光鲜亮丽的简历，我更希望你在这里看到一个活生生的人。</p>
+            <p>找我聊天：<a href="mailto:tianxinwang2006@g.ucla.edu">tianxinwang2006@g.ucla.edu</a></p>
+        </div>
+
+        <div id="research" class="page">
+            <h1>实验室 🔬</h1>
+            <p>这里记录了我平时在算些什么，以及踩过的坑。</p>
+
+            <div class="card">
+                <h3>给软体机器人找“痛觉神经”</h3>
+                <span class="date">Ongoing Project - Cosserat Rod Theory</span>
+                <p>最近在头疼软体机器人的传感器布局问题。传统的机械臂是硬的，关节在哪就在哪装传感器；但软体机械臂就像章鱼触手，变形是连续的。我正在用偏微分方程和 Galerkin 投影来降维，试图算出在充满噪声的现实环境里，到底把传感器贴在哪几个关键点，才能最准地还原它整体的姿态。</p>
             </div>
-            <div class="glass-card">
-                <h3>Food Economics</h3>
-                <p>Actively engaged in the intersection of economics and sustainable food systems, investigating labor ethics, agricultural subsidies, and cooperative models like the SoLA Food Co-op.</p>
+
+            <div class="card">
+                <h3>在 Kaggle 里淘金</h3>
+                <span class="date">Data Science Competitions</span>
+                <p>没事喜欢去 Kaggle 找点真实世界的脏数据练手。之前搞了 PhysioNet 的心电图数字化，还有 Vesuvius 的 3D 断层扫描数据提取。看着一堆乱码经过 Python 和 C++ 的洗礼变成清晰的预测模型，感觉跟破案一样爽。</p>
             </div>
         </div>
-    </section>
 
-    <footer style="margin-top: 50px; text-align: center; color: #888; border-top: 1px solid var(--glass-border); padding-top: 20px;">
-        <p>Interact with the background. Built with raw Math and JS.</p>
-        <p>GitHub: <a href="https://github.com/tianxinwang89-source" target="_blank">@tianxinwang89-source</a> | <a href="mailto:tianxinwang2006@g.ucla.edu">Email Me</a></p>
-    </footer>
-</div>
+        <div id="diary" class="page">
+            <h1>碎碎念 ☕</h1>
+            <p>一些和代码无关的日常输出，思考的碎片和生活的底噪。</p>
 
-<script>
-    // 酷炫背景互动逻辑：基于数学正弦波和鼠标引力的软体物理模拟
-    const canvas = document.getElementById('mathCanvas');
-    const ctx = canvas.getContext('2d');
-    
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+            <div class="card">
+                <h3>《冰雪之城》要交稿了</h3>
+                <span class="date">2026年5月</span>
+                <p>最近除了搞数学建模，大部分时间都在磨我的那篇科幻小说《City of Ice and Snow》。理科生写小说有个毛病，就是总想把世界观的物理逻辑盘得太明白，反而容易卡文。现在正在努力把重心拉回到人物的动机上。希望能顺利发表吧。</p>
+            </div>
 
-    let particles = [];
-    let mouse = { x: null, y: null };
+            <div class="card">
+                <h3>拉片笔记：捷克动画短片《手》(The Hand)</h3>
+                <span class="date">2026年4月</span>
+                <p>这周花了不少时间分析捷克的经典动画短片《The Hand》（注意，是那个很阴暗的木偶动画，不是什么真人电影）。没有一句台词，纯靠定格动画和极端的隐喻把权力、自由和艺术家的压抑表达得淋漓尽致。看惯了欧洲新浪潮那种长镜头，再回来看这种高密度的视觉象征，挺受启发的。</p>
+            </div>
+        </div>
 
-    window.addEventListener('mousemove', function(event) {
-        mouse.x = event.x;
-        mouse.y = event.y;
-    });
+    </div>
 
-    window.addEventListener('resize', function() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        init();
-    });
+    <script>
+        function switchPage(pageId, btnElement) {
+            // 隐藏所有页面
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
 
-    class Particle {
-        constructor(x, y, size, weight) {
-            this.x = x;
-            this.y = y;
-            this.size = size;
-            this.weight = weight;
-            this.baseY = y; // 记录初始位置，用于数学波浪计算
-        }
-        update(time) {
-            // 基础运动：使用正弦波模拟“软体/PDE”的波动感
-            this.y = this.baseY + Math.sin(this.x * 0.01 + time * 0.002) * 20;
+            // 取消所有按钮的选中状态
+            const btns = document.querySelectorAll('.nav-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
 
-            // 鼠标引力计算
-            if (mouse.x != null) {
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                let maxDistance = 150;
-
-                if (distance < maxDistance) {
-                    let force = (maxDistance - distance) / maxDistance;
-                    // 鼠标排斥效果，很带感
-                    this.x -= (dx / distance) * force * 5;
-                    this.y -= (dy / distance) * force * 5;
-                }
-            }
-            // 边界恢复
-            if (this.x < 0 || this.x > canvas.width) {
-                this.x = Math.random() * canvas.width;
-            }
-        }
-        draw() {
-            ctx.fillStyle = 'rgba(0, 210, 255, 0.8)';
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.closePath();
-            ctx.fill();
-        }
-    }
-
-    function init() {
-        particles = [];
-        let numberOfParticles = (canvas.width * canvas.height) / 9000;
-        for (let i = 0; i < numberOfParticles; i++) {
-            let x = Math.random() * canvas.width;
-            let y = Math.random() * canvas.height;
-            let size = (Math.random() * 2) + 1;
-            let weight = (Math.random() * 2) + 0.1;
-            particles.push(new Particle(x, y, size, weight));
-        }
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        let time = Date.now();
-        for (let i = 0; i < particles.length; i++) {
-            particles[i].update(time);
-            particles[i].draw();
+            // 显示目标页面并高亮对应按钮
+            document.getElementById(pageId).classList.add('active');
+            btnElement.classList.add('active');
             
-            // 连线逻辑：体现数据的网络感
-            for (let j = i; j < particles.length; j++) {
-                let dx = particles[i].x - particles[j].x;
-                let dy = particles[i].y - particles[j].y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < 100) {
-                    ctx.beginPath();
-                    ctx.strokeStyle = `rgba(58, 123, 213, ${1 - distance/100})`;
-                    ctx.lineWidth = 1;
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.stroke();
-                    ctx.closePath();
-                }
-            }
+            // 切换页面时自动回到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        requestAnimationFrame(animate);
-    }
-
-    init();
-    animate();
-</script>
-
+    </script>
 </body>
 </html>
