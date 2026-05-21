@@ -1,206 +1,245 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>William Wang | Access Terminal</title>
+    <title>William Wang | Terminal</title>
     <style>
         :root {
-            --bg-color: #f7f9fa;
-            --text-color: #1c1e21;
-            --card-bg: #ffffff;
-            --accent: #2774AE; /* UCLA Blue */
-            --border: #e1e4e8;
+            --bg-base: #0a0a0a;
+            --bg-surface: #111111;
+            --text-main: #ededed;
+            --text-muted: #888888;
+            --accent: #2774AE;
+            --accent-glow: rgba(39, 116, 174, 0.4);
+            --border-color: #222222;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-color: #0d1117;
-                --text-color: #c9d1d9;
-                --card-bg: #161b22;
-                --accent: #58a6ff;
-                --border: #30363d;
-            }
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
             line-height: 1.6;
-            margin: 0;
-            padding: 0;
+            overflow-x: hidden;
         }
 
-        .container {
-            max-width: 760px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        /* 顶部身份选择器 */
-        .identity-selector {
-            display: flex;
-            gap: 10px;
-            background: var(--card-bg);
-            padding: 10px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 40px;
-            overflow-x: auto;
-        }
-
-        .tab-btn {
-            flex: 1;
-            background: none;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            color: var(--text-color);
-            font-size: 1em;
-            font-weight: 500;
-            cursor: pointer;
+        /* 顶部毛玻璃导航 */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 20px 0;
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
             transition: all 0.3s ease;
-            white-space: nowrap;
         }
-
-        .tab-btn.active {
-            background: var(--accent);
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(39, 116, 174, 0.3);
+        .nav-content {
+            max-width: 1000px; margin: 0 auto; padding: 0 20px;
+            display: flex; justify-content: space-between; align-items: center;
         }
+        .logo { font-weight: 700; font-size: 1.2em; letter-spacing: 1px; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; margin-left: 20px; transition: color 0.2s; font-size: 0.9em; }
+        .nav-links a:hover { color: var(--text-main); }
 
-        /* 页面内容区 */
-        .module {
-            display: none;
-            animation: fadeIn 0.5s ease;
+        .container { max-width: 1000px; margin: 0 auto; padding: 120px 20px 60px; }
+
+        /* Hero Section */
+        .hero { margin-bottom: 80px; text-align: left; }
+        .hero h1 { font-size: 4em; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 10px; line-height: 1.1; }
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 0%, #888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .module.active { display: block; }
+        .hero p { font-size: 1.4em; color: var(--text-muted); max-width: 600px; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Bento Grid 布局 (学术/硬核模块) */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 100px;
         }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
+        .bento-item {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
             padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .bento-item:hover { transform: translateY(-3px); }
+        .span-2 { grid-column: span 2; }
+        .span-3 { grid-column: span 3; }
+
+        @media (max-width: 768px) {
+            .bento-grid { grid-template-columns: 1fr; }
+            .span-2, .span-3 { grid-column: span 1; }
+            .hero h1 { font-size: 3em; }
         }
 
-        h1 { font-size: 2em; margin-top: 0; }
-        h2 { font-size: 1.4em; color: var(--text-color); margin-bottom: 10px;}
-        h3 { font-size: 1.2em; border-left: 3px solid var(--accent); padding-left: 10px; }
-        
+        /* 高级互动：鼠标跟随光效 */
+        .glow-card::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.06), transparent 40%);
+            z-index: 1; pointer-events: none; opacity: 0; transition: opacity 0.3s;
+        }
+        .glow-card:hover::before { opacity: 1; }
+        .bento-content { position: relative; z-index: 2; }
+
+        /* 标签 */
         .tag {
-            display: inline-block;
-            background: rgba(88, 166, 255, 0.1);
-            color: var(--accent);
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.85em;
-            margin-right: 8px;
-            margin-bottom: 10px;
+            display: inline-block; padding: 4px 10px; border-radius: 20px;
+            font-size: 0.8em; font-weight: 500; margin-right: 8px; margin-bottom: 10px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* 图片样式 */
-        .styled-img {
-            width: 100%;
-            border-radius: 12px;
-            margin: 15px 0;
-            border: 1px solid var(--border);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            object-fit: cover;
+        /* 动态时间线布局 (留白框架) */
+        .section-title { font-size: 2em; margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
+        .timeline { position: relative; border-left: 2px solid var(--border-color); padding-left: 30px; margin-left: 10px; }
+        
+        .timeline-post { margin-bottom: 50px; position: relative; }
+        /* 时间线上的小圆点 */
+        .timeline-post::before {
+            content: ""; position: absolute; left: -37px; top: 5px;
+            width: 12px; height: 12px; border-radius: 50%;
+            background: var(--bg-base); border: 2px solid var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
         }
+        
+        .post-date { font-size: 0.85em; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .post-title { font-size: 1.5em; margin-bottom: 15px; }
+        .post-body { color: var(--text-muted); line-height: 1.8; }
+        
+        /* 图片占位符 */
+        .image-placeholder {
+            width: 100%; height: 200px; border-radius: 12px; margin-top: 15px;
+            background: repeating-linear-gradient(45deg, #1a1a1a, #1a1a1a 10px, #111 10px, #111 20px);
+            border: 1px dashed #333; display: flex; align-items: center; justify-content: center;
+            color: #555; font-size: 0.9em;
+        }
+
+        /* 滚动揭示动画 */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
     </style>
 </head>
 <body>
 
-<div class="container">
-    
-    <header style="margin-bottom: 30px;">
-        <h1>Tianxin (William) Wang</h1>
-        <p>Select your clearance level to view relevant data.</p>
-    </header>
-
-    <div class="identity-selector">
-        <button class="tab-btn active" onclick="switchModule('recruiter', this)">👔 招聘/学术 (HR & Prof.)</button>
-        <button class="tab-btn" onclick="switchModule('friends', this)">🍻 朋友/校友 (Friends)</button>
-        <button class="tab-btn" onclick="switchModule('private', this)">🌌 精神角落 (Vault)</button>
-    </div>
-
-    <div id="recruiter" class="module active">
-        <div class="card">
-            <h2>Academic & Professional Profile</h2>
-            <p><strong>UCLA Applied Mathematics</strong> | GPA: 3.80 | Expected June 2029</p>
-            <p>专注复杂系统建模、凸优化与数据科学。曾在 PhysioNet (ECG Digitization) 和 Vesuvius (3D Tomography) 两项 Kaggle 挑战赛中斩获银牌（Top 4%），并获得 BAS Case Competition 冠军。</p>
-            
-            <h3>软体机器人传感器布局优化</h3>
-            <span class="tag">PDE Modeling</span> <span class="tag">Cosserat Rod Theory</span>
-            <p>在实验室基于 Galerkin 投影对无穷维偏微分方程进行降维。研发贪心优化算法，解决在存在测量噪声情况下的传感器最优放置问题。</p>
-            
-            <img src="research.jpg" alt="Research Visualization" class="styled-img" onerror="this.style.display='none'">
-            
-            <h3>Robust Control Systems</h3>
-            <span class="tag">H-infinity Control</span> <span class="tag">Convex Optimization</span>
-            <p>研究离散时间系统中的直接策略搜索，推导弱凸性条件并验证理论结果。</p>
-            <p style="margin-top: 20px;"><a href="mailto:tianxinwang2006@g.ucla.edu" style="color: var(--accent); font-weight: bold;">[ Get in touch for my full Resume ]</a></p>
+    <nav>
+        <div class="nav-content">
+            <div class="logo">W.</div>
+            <div class="nav-links">
+                <a href="#work">Work</a>
+                <a href="#vault">Vault</a>
+                <a href="mailto:tianxinwang2006@g.ucla.edu">Contact</a>
+            </div>
         </div>
-    </div>
+    </nav>
 
-    <div id="friends" class="module">
-        <div class="card">
-            <h2>Track, Tech & Tactics</h2>
-            <p>除了在实验室算方程，这里是我的竞技场和生活区。</p>
-
-            <h3>🏃‍♂️ 田径与破风</h3>
-            <p>Varsity Track and Field 队长。我喜欢研究接力赛的策略，也自己运营过专注于气动自行车（aero-bike）机械原理和赛事表现分析的账号。不管是田径还是骑车，本质上都是在和物理阻力作斗争。</p>
-            
-            <img src="sports.jpg" alt="Track and Field / Cycling" class="styled-img" onerror="this.style.display='none'">
-
-            <h3>🎮 电子与桌面博弈</h3>
-            <p>高强度 CS2 玩家，德州扑克爱好者。从 Kaggle 赛场到牌桌，我沉迷于在不完全信息下做 EV（期望值）最大化的决策。</p>
+    <div class="container">
+        
+        <div class="hero reveal">
+            <h1 class="gradient-text">Tianxin Wang.</h1>
+            <p>Applied Mathematics & Data Science @ UCLA. <br>Building robust models and capturing signals in the noise.</p>
         </div>
-    </div>
 
-    <div id="private" class="module">
-        <div class="card">
-            <h2>The Vault</h2>
-            <p>一些感性的碎片、社会观察与未完结的创作。</p>
+        <div id="work" class="bento-grid">
+            <div class="bento-item span-2 glow-card reveal">
+                <div class="bento-content">
+                    <h3 style="font-size: 1.5em; margin-bottom: 10px;">Soft Robotics Sensor Optimization</h3>
+                    <div class="tag">PDE Modeling</div> <div class="tag">Galerkin Projection</div>
+                    <p style="color: var(--text-muted); margin-top: 15px;">Reducing infinite-dimensional Cosserat rod models to finite dynamics. Developing greedy algorithms to bound full-field reconstruction error under measurement noise.</p>
+                </div>
+            </div>
 
-            <h3>✍️ Sci-Fi: City of Ice and Snow</h3>
-            <p>即将发表的科幻小说。在这里，我试图暂时放下严谨的控制系统和数学推导，探讨在极寒的反乌托邦设定下，人类动机的不可控性。</p>
+            <div class="bento-item glow-card reveal" style="transition-delay: 0.1s;">
+                <div class="bento-content">
+                    <h3 style="font-size: 1.5em; margin-bottom: 10px;">Kaggle Top 4%</h3>
+                    <div class="tag">Computer Vision</div>
+                    <p style="color: var(--text-muted); margin-top: 15px;">Dual Silver Medalist in ECG Digitization and 3D Tomography extraction.</p>
+                </div>
+            </div>
 
-            <h3>🎥 视觉与隐喻</h3>
-            <p>对于学艺术或懂电影的朋友，你们懂的。最近在拉片捷克经典木偶动画短片《The Hand》，以及重温 Velázquez 的画作。当欧洲新浪潮的电影语言看腻了之后，这种高强度的定格隐喻反而有着直击人心的力量。</p>
-            
-            <img src="life.jpg" alt="Cinema and Art" class="styled-img" onerror="this.style.display='none'">
-
-            <h3>🌱 农业与劳工伦理</h3>
-            <p>除了敲代码，我也在关注食品经济系统。一直在追踪 SoLA Food Co-op 的进展，思考农业补贴背后的逻辑和移民劳工的伦理困境。技术是为了让世界变得更有效率，但经济学决定了这种效率最终服务于谁。</p>
+            <div class="bento-item span-3 glow-card reveal" style="transition-delay: 0.2s;">
+                <div class="bento-content">
+                    <h3 style="font-size: 1.5em; margin-bottom: 10px;">H-infinity Robust Control</h3>
+                    <div class="tag">Convex Optimization</div> <div class="tag">Undergrad Researcher</div>
+                    <p style="color: var(--text-muted); margin-top: 15px;">Investigating direct policy-search formulation of discrete-time control. Establishing Lipschitz continuity of Fréchet derivatives to support stochastic subgradient analyses.</p>
+                </div>
+            </div>
         </div>
+
+        <div id="vault" class="reveal">
+            <h2 class="section-title">The Vault</h2>
+            
+            <div class="timeline">
+                
+                <div class="timeline-post reveal">
+                    <span class="post-date">[YYYY-MM-DD] / CATEGORY: THOUGHTS</span>
+                    <h3 class="post-title">[在此输入你的标题，例如：关于某次德州扑克的局后复盘]</h3>
+                    <div class="post-body">
+                        <p>[在此输入你的段落 1：可以写你的思考、生活感悟或随笔。]</p>
+                        <p>[在此输入你的段落 2：支持无限制增加 p 标签。]</p>
+                        <div class="image-placeholder">
+                            [ 替换成真实的 &lt;img src="你的图片路径"&gt; ]
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-post reveal">
+                    <span class="post-date">[YYYY-MM-DD] / CATEGORY: CREATION</span>
+                    <h3 class="post-title">[在此输入你的标题，例如：科幻短篇《City of Ice and Snow》改稿记录]</h3>
+                    <div class="post-body">
+                        <p>[在此输入正文。]</p>
+                    </div>
+                </div>
+
+                <div class="timeline-post reveal">
+                    <span class="post-date">[YYYY-MM-DD] / CATEGORY: LOG</span>
+                    <h3 class="post-title">[在此输入标题，例如：CS2 某些残局的残局思路]</h3>
+                    <div class="post-body">
+                        <p>[在此输入正文。]</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
-</div>
+    <script>
+        // 1. 滚动揭示动画 (Scroll Reveal)
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 50;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // 初始化触发一次
 
-<script>
-    function switchModule(moduleId, btnElement) {
-        // 隐藏所有模块
-        const modules = document.querySelectorAll('.module');
-        modules.forEach(mod => mod.classList.remove('active'));
-
-        // 移除所有按钮的 active 状态
-        const btns = document.querySelectorAll('.tab-btn');
-        btns.forEach(btn => btn.classList.remove('active'));
-
-        // 显示目标模块并高亮按钮
-        document.getElementById(moduleId).classList.add('active');
-        btnElement.classList.add('active');
-    }
-</script>
-
+        // 2. 鼠标追踪光效 (Mouse Tracking Glow)
+        document.querySelectorAll('.glow-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
 </body>
 </html>
