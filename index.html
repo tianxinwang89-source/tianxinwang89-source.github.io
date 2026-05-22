@@ -10,8 +10,8 @@
             --bg-surface: #111111;
             --text-main: #ededed;
             --text-muted: #888888;
-            --accent: #2774AE;
-            --accent-glow: rgba(39, 116, 174, 0.4);
+            --accent: #2774AE; /* UCLA Blue */
+            --accent-glow: rgba(39, 116, 174, 0.3);
             --border-color: #222222;
         }
 
@@ -35,29 +35,65 @@
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-color);
             z-index: 100;
-            transition: all 0.3s ease;
         }
         .nav-content {
-            max-width: 1000px; margin: 0 auto; padding: 0 20px;
+            max-width: 900px; margin: 0 auto; padding: 0 20px;
             display: flex; justify-content: space-between; align-items: center;
         }
         .logo { font-weight: 700; font-size: 1.2em; letter-spacing: 1px; }
         .nav-links a { color: var(--text-muted); text-decoration: none; margin-left: 20px; transition: color 0.2s; font-size: 0.9em; }
         .nav-links a:hover { color: var(--text-main); }
 
-        .container { max-width: 1000px; margin: 0 auto; padding: 120px 20px 60px; }
+        .container { max-width: 900px; margin: 0 auto; padding: 140px 20px 60px; }
 
-        /* Hero Section */
-        .hero { margin-bottom: 80px; text-align: left; }
-        .hero h1 { font-size: 4em; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 10px; line-height: 1.1; }
+        /* 高级头像 + 随性 Talk 简介区 */
+        .profile-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 35px;
+            margin-bottom: 80px;
+        }
+        
+        .avatar-container {
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .profile-avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 24px; /* 现代感微圆角，比纯圆更高级 */
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .header-text { flex: 1; }
+        .header-text h1 { font-size: 3.2em; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; line-height: 1.1; }
+        
         .gradient-text {
-            background: linear-gradient(135deg, #fff 0%, #888 100%);
+            background: linear-gradient(135deg, #fff 0%, #aaa 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .hero p { font-size: 1.4em; color: var(--text-muted); max-width: 600px; }
+        
+        .bio-talk {
+            font-size: 1.1em;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+        
+        .bio-talk strong {
+            color: var(--text-main);
+            font-weight: 500;
+        }
 
-        /* Bento Grid 布局 (学术/硬核模块) */
+        @media (max-width: 650px) {
+            .profile-header { flex-direction: column; gap: 20px; align-items: center; text-align: center; }
+            .header-text h1 { font-size: 2.5em; }
+        }
+
+        /* Bento Grid 布局 (核心成果展示) */
         .bento-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -80,54 +116,48 @@
         @media (max-width: 768px) {
             .bento-grid { grid-template-columns: 1fr; }
             .span-2, .span-3 { grid-column: span 1; }
-            .hero h1 { font-size: 3em; }
         }
 
-        /* 高级互动：鼠标跟随光效 */
+        /* 鼠标追踪光效 */
         .glow-card::before {
             content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.06), transparent 40%);
+            background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.05), transparent 40%);
             z-index: 1; pointer-events: none; opacity: 0; transition: opacity 0.3s;
         }
         .glow-card:hover::before { opacity: 1; }
         .bento-content { position: relative; z-index: 2; }
 
-        /* 标签 */
         .tag {
-            display: inline-block; padding: 4px 10px; border-radius: 20px;
+            display: inline-block; padding: 4px 10px; border-radius: 6px;
             font-size: 0.8em; font-weight: 500; margin-right: 8px; margin-bottom: 10px;
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
         }
 
         /* 动态时间线布局 (留白框架) */
-        .section-title { font-size: 2em; margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; }
-        .timeline { position: relative; border-left: 2px solid var(--border-color); padding-left: 30px; margin-left: 10px; }
+        .section-title { font-size: 1.8em; margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; letter-spacing: -0.5px;}
+        .timeline { position: relative; border-left: 1px solid var(--border-color); padding-left: 30px; margin-left: 10px; }
         
-        .timeline-post { margin-bottom: 50px; position: relative; }
-        /* 时间线上的小圆点 */
+        .timeline-post { margin-bottom: 60px; position: relative; }
         .timeline-post::before {
-            content: ""; position: absolute; left: -37px; top: 5px;
-            width: 12px; height: 12px; border-radius: 50%;
+            content: ""; position: absolute; left: -36px; top: 7px;
+            width: 10px; height: 10px; border-radius: 50%;
             background: var(--bg-base); border: 2px solid var(--accent);
-            box-shadow: 0 0 10px var(--accent-glow);
         }
         
-        .post-date { font-size: 0.85em; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; display: block; }
-        .post-title { font-size: 1.5em; margin-bottom: 15px; }
-        .post-body { color: var(--text-muted); line-height: 1.8; }
+        .post-date { font-size: 0.8em; color: var(--accent); letter-spacing: 1px; margin-bottom: 8px; display: block; font-weight: 600; }
+        .post-title { font-size: 1.3em; margin-bottom: 12px; font-weight: 600; }
+        .post-body { color: var(--text-muted); font-size: 1.05em; line-height: 1.7; }
         
-        /* 图片占位符 */
         .image-placeholder {
-            width: 100%; height: 200px; border-radius: 12px; margin-top: 15px;
-            background: repeating-linear-gradient(45deg, #1a1a1a, #1a1a1a 10px, #111 10px, #111 20px);
+            width: 100%; height: 180px; border-radius: 12px; margin-top: 15px;
+            background: repeating-linear-gradient(45deg, #161b22, #161b22 10px, #111 10px, #111 20px);
             border: 1px dashed #333; display: flex; align-items: center; justify-content: center;
-            color: #555; font-size: 0.9em;
+            color: #555; font-size: 0.85em;
         }
 
-        /* 滚动揭示动画 */
-        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
-
+        a { color: var(--accent); text-decoration: none; }
     </style>
 </head>
 <body>
@@ -136,8 +166,8 @@
         <div class="nav-content">
             <div class="logo">W.</div>
             <div class="nav-links">
-                <a href="#work">Work</a>
-                <a href="#vault">Vault</a>
+                <a href="#work">Research & Data</a>
+                <a href="#vault">The Vault</a>
                 <a href="mailto:tianxinwang2006@g.ucla.edu">Contact</a>
             </div>
         </div>
@@ -145,67 +175,69 @@
 
     <div class="container">
         
-        <div class="hero reveal">
-            <h1 class="gradient-text">Tianxin Wang.</h1>
-            <p>Applied Mathematics & Data Science @ UCLA. <br>Building robust models and capturing signals in the noise.</p>
+        <div class="profile-header reveal">
+            <div class="avatar-container">
+                <img src="avatar.jpg" alt="William Wang" class="profile-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'">
+            </div>
+            <div class="header-text">
+                <h1 class="gradient-text">Tianxin Wang</h1>
+                <div class="bio-talk">
+                    <p>嘿，我是 William。目前在 <strong>UCLA 读应用数学（Class of 2029）</strong>。</p>
+                    <p style="margin-top: 10px;">我不喜欢把网页做成冷冰冰的格式化简历。对我来说，数学不是黑板上枯燥的符号，而是捕捉世界信号的底层代码。我喜欢在纯粹的数理逻辑与噪声遍布的现实世界之间找交叉点——所以在复盘复杂的商业案例时拿了 <strong>BAS 竞赛的冠军</strong>，也去 Kaggle 的脏数据里淘金，拿到了<strong>心电图数字化和 3D 断层扫描提取的两枚银牌</strong>。</p>
+                    <p style="margin-top: 10px;">除了代码和方程，我把剩下的绝大多数热爱留给了现实生活。我是田径场上的 <strong>Varsity 队长</strong>，高强度的 <strong>CS2 玩家</strong>，也是个喜欢研究期望值的<strong>德州扑克手</strong>。哦对，闲下来的时候，我还在改写我的下一篇科幻小说。这里是我的自留地，很高兴你点进来。</p>
+                </div>
+            </div>
         </div>
 
         <div id="work" class="bento-grid">
             <div class="bento-item span-2 glow-card reveal">
                 <div class="bento-content">
-                    <h3 style="font-size: 1.5em; margin-bottom: 10px;">Soft Robotics Sensor Optimization</h3>
-                    <div class="tag">PDE Modeling</div> <div class="tag">Galerkin Projection</div>
-                    <p style="color: var(--text-muted); margin-top: 15px;">Reducing infinite-dimensional Cosserat rod models to finite dynamics. Developing greedy algorithms to bound full-field reconstruction error under measurement noise.</p>
+                    <h3 style="font-size: 1.3em; margin-bottom: 8px;">Soft Robotics Optimization</h3>
+                    <div class="tag">PDE Modeling</div> <div class="tag">Cosserat Rod</div>
+                    <p style="color: var(--text-muted); font-size: 0.95em;">基于 Galerkin 投影对无穷维偏微分方程进行降维，研究在测量噪声干扰下，软体机器人传感器的最优放置边界。</p>
                 </div>
             </div>
 
-            <div class="bento-item glow-card reveal" style="transition-delay: 0.1s;">
+            <div class="bento-item glow-card reveal">
                 <div class="bento-content">
-                    <h3 style="font-size: 1.5em; margin-bottom: 10px;">Kaggle Top 4%</h3>
-                    <div class="tag">Computer Vision</div>
-                    <p style="color: var(--text-muted); margin-top: 15px;">Dual Silver Medalist in ECG Digitization and 3D Tomography extraction.</p>
+                    <h3 style="font-size: 1.3em; margin-bottom: 8px;">Kaggle Silver</h3>
+                    <div class="tag">Top 4%</div>
+                    <p style="color: var(--text-muted); font-size: 0.95em;">解决 Vesuvius 3D 视觉数据提取与 PhysioNet 心电图数字化挑战。</p>
                 </div>
             </div>
 
-            <div class="bento-item span-3 glow-card reveal" style="transition-delay: 0.2s;">
+            <div class="bento-item span-3 glow-card reveal">
                 <div class="bento-content">
-                    <h3 style="font-size: 1.5em; margin-bottom: 10px;">H-infinity Robust Control</h3>
-                    <div class="tag">Convex Optimization</div> <div class="tag">Undergrad Researcher</div>
-                    <p style="color: var(--text-muted); margin-top: 15px;">Investigating direct policy-search formulation of discrete-time control. Establishing Lipschitz continuity of Fréchet derivatives to support stochastic subgradient analyses.</p>
+                    <h3 style="font-size: 1.3em; margin-bottom: 8px;">Robust Control Systems</h3>
+                    <div class="tag">H-infinity Control</div> <div class="tag">Convex Optimization</div>
+                    <p style="color: var(--text-muted); font-size: 0.95em;">研究离散时间系统下的直接策略搜索 formulation，并着手推导 sublevel sets 的弱凸性充分条件。</p>
                 </div>
             </div>
         </div>
 
         <div id="vault" class="reveal">
-            <h2 class="section-title">The Vault</h2>
+            <h2 class="section-title">The Vault / 碎碎念流动流</h2>
             
             <div class="timeline">
                 
                 <div class="timeline-post reveal">
-                    <span class="post-date">[YYYY-MM-DD] / CATEGORY: THOUGHTS</span>
-                    <h3 class="post-title">[在此输入你的标题，例如：关于某次德州扑克的局后复盘]</h3>
+                    <span class="post-date">2026 . 05 . 21 / THOUGHTS</span>
+                    <h3 class="post-title">[ 在这里写下你今天想聊的话题标题 ]</h3>
                     <div class="post-body">
-                        <p>[在此输入你的段落 1：可以写你的思考、生活感悟或随笔。]</p>
-                        <p>[在此输入你的段落 2：支持无限制增加 p 标签。]</p>
+                        <p>这是留给你的随性文字空间。你可以直接用平常说话的语气在这里输入正文。比如：今天在 UCLA 遇到了什么好玩的事，或者某个公式推导了一半卡住了。</p>
+                        <p style="margin-top: 10px;">支持多段落，直接复制 p 标签就可以增加下一段。</p>
+                        
                         <div class="image-placeholder">
-                            [ 替换成真实的 &lt;img src="你的图片路径"&gt; ]
+                            [ 拖一张配图到仓库，然后把这里替换成 &lt;img src="图片名.jpg" style="width:100%; border-radius:12px;"&gt; ]
                         </div>
                     </div>
                 </div>
 
                 <div class="timeline-post reveal">
-                    <span class="post-date">[YYYY-MM-DD] / CATEGORY: CREATION</span>
-                    <h3 class="post-title">[在此输入你的标题，例如：科幻短篇《City of Ice and Snow》改稿记录]</h3>
+                    <span class="post-date">2026 . 05 . 15 / LIFE</span>
+                    <h3 class="post-title">[ 比如：关于《City of Ice and Snow》的改稿碎碎念 ]</h3>
                     <div class="post-body">
-                        <p>[在此输入正文。]</p>
-                    </div>
-                </div>
-
-                <div class="timeline-post reveal">
-                    <span class="post-date">[YYYY-MM-DD] / CATEGORY: LOG</span>
-                    <h3 class="post-title">[在此输入标题，例如：CS2 某些残局的残局思路]</h3>
-                    <div class="post-body">
-                        <p>[在此输入正文。]</p>
+                        <p>空白留位。当你有了新的创作灵感，或者看了一部绝妙的独立电影、拉了一部定格动画的片子，可以直接在这个框里畅所欲言。</p>
                     </div>
                 </div>
 
@@ -215,29 +247,26 @@
     </div>
 
     <script>
-        // 1. 滚动揭示动画 (Scroll Reveal)
+        // 滚动显示特效
         function reveal() {
             var reveals = document.querySelectorAll(".reveal");
             for (var i = 0; i < reveals.length; i++) {
                 var windowHeight = window.innerHeight;
                 var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 50;
-                if (elementTop < windowHeight - elementVisible) {
+                if (elementTop < windowHeight - 40) {
                     reveals[i].classList.add("active");
                 }
             }
         }
         window.addEventListener("scroll", reveal);
-        reveal(); // 初始化触发一次
+        reveal();
 
-        // 2. 鼠标追踪光效 (Mouse Tracking Glow)
+        // Bento 卡片鼠标跟随高光
         document.querySelectorAll('.glow-card').forEach(card => {
             card.addEventListener('mousemove', e => {
                 const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
+                card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+                card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
             });
         });
     </script>
